@@ -10,10 +10,7 @@
 #	amdgpu	enable amdgpu usage reporting, default auto
 #		it requires libdrm >= 2.4.63
 
-PREFIX ?= /usr
-INSTALL ?= install
-LIBDIR ?= lib
-MANDIR ?= share/man
+include config.mk
 
 nls ?= 1
 xcb ?= 1
@@ -105,7 +102,7 @@ $(bin): $(obj)
 	$(CC) -o $(bin) $(obj) $(CFLAGS) $(LDFLAGS) $(LIBS)
 
 clean:
-	rm -f *.o $(bin) $(xcblib)
+	rm -f *.o $(bin) $(xcblib) include/version.h translations/ru.mo
 
 .git:
 
@@ -117,11 +114,11 @@ trans:
 	--package-name radeontop
 
 install: all
-	$(INSTALL) -D -m755 $(bin) $(DESTDIR)/$(PREFIX)/sbin/$(bin)
+	$(INSTALL) -D -m755 $(bin) $(PREFIX)/bin/$(bin)
 ifeq ($(xcb), 1)
-	$(INSTALL) -D -m755 $(xcblib) $(DESTDIR)/$(PREFIX)/$(LIBDIR)/$(xcblib)
+	$(INSTALL) -D -m755 $(xcblib) $(PREFIX)/$(LIBDIR)/$(xcblib)
 endif
-	$(INSTALL) -D -m644 radeontop.1 $(DESTDIR)/$(PREFIX)/$(MANDIR)/man1/radeontop.1
+	$(INSTALL) -D -m644 radeontop.1 $(PREFIX)/$(MANDIR)/man1/radeontop.1
 ifeq ($(nls), 1)
 	$(MAKE) -C translations install PREFIX=$(PREFIX)
 endif
